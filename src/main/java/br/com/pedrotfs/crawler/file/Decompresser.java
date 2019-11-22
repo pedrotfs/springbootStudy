@@ -1,7 +1,6 @@
 package br.com.pedrotfs.crawler.file;
 
-import org.springframework.stereotype.Component;
+public interface Decompresser {
 
-@Component
-public class Decompresser {
+    void decompress(final String fileLocation, final String fileName, final String zippedName);
 }
