@@ -41,7 +41,6 @@ public class DecompresserImpl implements Decompresser {
                         fileOutputStream.write(buffer, 0, len);
                     }
                     fileOutputStream.close();
-                    //close this ZipEntry
                     zip.closeEntry();
                     break;
                 }
