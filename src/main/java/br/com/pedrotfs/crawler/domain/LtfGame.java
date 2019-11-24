@@ -6,9 +6,4 @@ public class LtfGame extends AbstractGame {
         setNumberCount(15);
         setNumberLimit(25);
     }
-
-    @Override
-    public String toString() {
-        return "LtfGame{}\n" + super.toString();
-    }
 }

@@ -95,14 +95,4 @@ public abstract class AbstractGame {
     public void setDate(LocalDate date) {
         this.date = date;
     }
-
-    @Override
-    public String toString() {
-        return "AbstractGame{" +
-                "id=" + id +
-                ", numbers=" + numbers +
-                ", winnerCategories=" + winnerCategories +
-                ", value=" + value +
-                '}';
-    }
 }
