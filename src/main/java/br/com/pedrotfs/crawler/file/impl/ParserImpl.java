@@ -1,6 +1,5 @@
 package br.com.pedrotfs.crawler.file.impl;
 
-import br.com.pedrotfs.crawler.domain.LtfGame;
 import br.com.pedrotfs.crawler.file.Parser;
 import br.com.pedrotfs.crawler.util.MatchingPatternHolder;
 import org.jsoup.Jsoup;
@@ -26,7 +25,7 @@ public class ParserImpl implements Parser {
 
     @Override
     public List<String> parse(final String originFileName) {
-        LOG.info("parsing " + originFileName);
+        LOG.info("parsing generated" + originFileName);
         File file = new File(originFileName);
         List<String> filteredResults = new ArrayList<>();
         try {
@@ -39,7 +38,7 @@ public class ParserImpl implements Parser {
                 cleanResult = cleanLineHolder(cleanResult);
 
                 if(!cleanResult.isEmpty()) {
-                    LOG.info("LINE: " + cleanResult);
+                    LOG.debug("LINE: " + cleanResult);
                     filteredResults.add(cleanResult);
                 }
 //              LOG.info("LINE: " + e.toString());
@@ -47,6 +46,7 @@ public class ParserImpl implements Parser {
         } catch (IOException e) {
             LOG.error("Could not parse " + originFileName, e);
         }
+        LOG.info("parsed " + originFileName + ". result count: " + filteredResults.size());
         return filteredResults;
     }
 

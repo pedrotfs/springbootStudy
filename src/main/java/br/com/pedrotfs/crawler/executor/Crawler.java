@@ -1,5 +1,6 @@
 package br.com.pedrotfs.crawler.executor;
 
+import br.com.pedrotfs.crawler.assembler.Assembler;
 import br.com.pedrotfs.crawler.domain.LtfGame;
 import br.com.pedrotfs.crawler.file.Decompresser;
 import br.com.pedrotfs.crawler.file.Downloader;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @Configurable
@@ -40,6 +42,9 @@ public class Crawler {
     @Autowired
     private Parser parser;
 
+    @Autowired
+    private Assembler assembler;
+
     public void start()
     {
         LOG.info("Starting crawler execution.");
@@ -48,7 +53,7 @@ public class Crawler {
             downloader.download(fileLocation, fileName);
             decompresser.decompress(extractTo, fileName, zippedName);
         }
-        parser.parse(extractTo);
+        assembler.assemble(parser.parse(extractTo));
         LOG.info("Ending crawler execution.");
     }
 
