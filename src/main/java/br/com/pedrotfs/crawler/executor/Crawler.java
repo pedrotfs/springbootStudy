@@ -5,6 +5,8 @@ import br.com.pedrotfs.crawler.domain.LtfGame;
 import br.com.pedrotfs.crawler.file.Decompresser;
 import br.com.pedrotfs.crawler.file.Downloader;
 import br.com.pedrotfs.crawler.file.Parser;
+import br.com.pedrotfs.crawler.kafka.RegisterProducer;
+import br.com.pedrotfs.crawler.kafka.RequestConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,16 +47,36 @@ public class Crawler {
     @Autowired
     private Assembler assembler;
 
-    public void start()
-    {
+    @Autowired
+    private RegisterProducer registerProducer;
+
+    @Autowired
+    private RequestConsumer requestConsumer;
+
+    public void start() throws InterruptedException {
         LOG.info("Starting crawler execution.");
+
+        String pooledRequest = "";
+        while(!pooledRequest.equalsIgnoreCase("X"))
+        {
+            if(pooledRequest.isEmpty()) {
+                LOG.info("No requests pooled. standing idle.");
+                Thread.sleep(10000);
+            } else {
+                executeFlow();
+            }
+            pooledRequest = requestConsumer.consumeFeed();
+        }
+        LOG.info("Ending crawler execution.");
+    }
+
+    private void executeFlow() {
         if(shouldUpdateSource()) {
             LOG.info("Updating source was deemed necessary.");
             downloader.download(fileLocation, fileName);
             decompresser.decompress(extractTo, fileName, zippedName);
         }
-        assembler.assemble(parser.parse(extractTo));
-        LOG.info("Ending crawler execution.");
+        registerProducer.produceRegister(assembler.assemble(parser.parse(extractTo)));
     }
 
     private boolean shouldUpdateSource()
