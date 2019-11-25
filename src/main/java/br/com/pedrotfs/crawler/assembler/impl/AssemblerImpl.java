@@ -36,7 +36,7 @@ public class AssemblerImpl implements Assembler {
         final String[] split = line.split(matchingPatternHolder.getSplit());
         LtfGame register = new LtfGame();
 
-        register.setId(Integer.parseInt(split[1]));
+        register.set_id(Integer.parseInt(split[1]));
         populateNumbers(split, register);
         populateCategoriesAmount(split, register);
         populateCategoriesDividends(split, register);

@@ -4,6 +4,7 @@ import br.com.pedrotfs.crawler.domain.LtfGame;
 import br.com.pedrotfs.crawler.kafka.RegisterProducer;
 import br.com.pedrotfs.crawler.kafka.callback.ProducerCallBack;
 import br.com.pedrotfs.crawler.kafka.factory.KafkaProducerFactory;
+import br.com.pedrotfs.crawler.mongo.MongoClientWrapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -23,6 +24,8 @@ public class RegisterProducerImpl implements RegisterProducer {
     @Autowired
     private KafkaProducerFactory kafkaProducerFactory;
 
+    @Autowired
+    private MongoClientWrapper mongoClientWrapper;
 
     @Override
     public void produceRegister(List<LtfGame> registers) {
@@ -36,8 +39,10 @@ public class RegisterProducerImpl implements RegisterProducer {
         Gson gson = gsonBuilder.create();
 
         registers.forEach(r -> {
-            LOG.debug(gson.toJson(r));
-            final ProducerRecord<String, String> producerRecord = kafkaProducerFactory.createProducerRecord(gson.toJson(r));
+            final String message = gson.toJson(r);
+            LOG.debug(message);
+            final ProducerRecord<String, String> producerRecord = kafkaProducerFactory.createProducerRecord(message);
+            mongoClientWrapper.persistPreSentRecords(message);
             producer.send(producerRecord , callback);
         });
 

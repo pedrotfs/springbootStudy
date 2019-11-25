@@ -31,13 +31,14 @@ public class RequestConsumerImpl implements RequestConsumer {
             consumer = consumerFactory.createConsumer();
         }
         LOG.info("pooling kafka queue.");
-        final ConsumerRecords<String, String> poll = consumer.poll(Duration.ofMillis(1000));
+        final ConsumerRecords<String, String> poll = consumer.poll(Duration.ofMillis(100));
         if(poll.isEmpty()) {
             LOG.info("No records recovered");
         } else {
             poll.forEach(r -> {
-                LOG.info("request pooled. Key: " + r.key() + ", timestamp: " +
-                        r.timestamp() + ", offset: " + r.offset() + ", value: " + r.value());
+                LOG.info("request pooled. Key: " + r.key() + ", timestamp: " + r.timestamp()
+                        + ", offset: " + r.offset() + ", partition: " + r.partition() + ", value: " + r.value());
+                consumer.commitSync();
                 setResult(r.value());
             });
         }

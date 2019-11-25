@@ -1,21 +1,19 @@
 package br.com.pedrotfs.crawler.executor;
 
 import br.com.pedrotfs.crawler.assembler.Assembler;
-import br.com.pedrotfs.crawler.domain.LtfGame;
 import br.com.pedrotfs.crawler.file.Decompresser;
 import br.com.pedrotfs.crawler.file.Downloader;
 import br.com.pedrotfs.crawler.file.Parser;
 import br.com.pedrotfs.crawler.kafka.RegisterProducer;
 import br.com.pedrotfs.crawler.kafka.RequestConsumer;
+import br.com.pedrotfs.crawler.mongo.MongoClientWrapper;
+import com.mongodb.client.MongoDatabase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 @Configurable
@@ -53,34 +51,53 @@ public class Crawler {
     @Autowired
     private RequestConsumer requestConsumer;
 
+    @Autowired
+    private MongoClientWrapper mongoWrapper;
+
+    MongoDatabase database;
+
     public void start() throws InterruptedException {
         LOG.info("Starting crawler execution.");
+        database = mongoWrapper.setUpDbConnection();
 
-        String pooledRequest = "";
+        String pooledRequest = mongoWrapper.recoverLastRequest();
+        String previousRequest = pooledRequest;
         while(!pooledRequest.equalsIgnoreCase("X"))
         {
-            if(pooledRequest.isEmpty()) {
+            if(pooledRequest.equalsIgnoreCase(previousRequest)) {
                 LOG.info("No requests pooled. standing idle.");
-                Thread.sleep(10000);
             } else {
+                mongoWrapper.persistRequest(pooledRequest);
                 executeFlow();
             }
+            previousRequest = pooledRequest;
             pooledRequest = requestConsumer.consumeFeed();
+            Thread.sleep(10000);
         }
         LOG.info("Ending crawler execution.");
     }
 
     private void executeFlow() {
-        if(shouldUpdateSource()) {
+        if(shouldUpdateSource()) { //TODO here to test schedules
             LOG.info("Updating source was deemed necessary.");
             downloader.download(fileLocation, fileName);
             decompresser.decompress(extractTo, fileName, zippedName);
+            //registerProducer.produceRegister(assembler.assemble(parser.parse(extractTo)));
         }
         registerProducer.produceRegister(assembler.assemble(parser.parse(extractTo)));
     }
 
-    private boolean shouldUpdateSource()
+    private boolean shouldUpdateSource() {
+        return mongoWrapper.shouldUpdateSource();
+    }
+
+    private boolean shouldDebugSource()
     {
-        return false; //needs database to save when last download and schedule
+        return false;
+    }
+
+    private boolean debug()
+    {
+        return false;
     }
 }
