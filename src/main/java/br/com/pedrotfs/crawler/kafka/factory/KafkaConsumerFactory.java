@@ -38,6 +38,8 @@ public class KafkaConsumerFactory {
         properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
         properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, group);
         properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, offsetReset);
+        properties.setProperty(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "1000");
+        properties.setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
         kafkaFactoryUtils.setSerializerPropertiesConsumer(properties);
         return properties;
     }

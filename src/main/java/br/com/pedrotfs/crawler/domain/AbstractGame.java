@@ -6,7 +6,7 @@ import java.util.List;
 
 public abstract class AbstractGame {
 
-    private int id;
+    private int _id;
 
     private List<Integer> numbers = new ArrayList<>();
 
@@ -24,12 +24,12 @@ public abstract class AbstractGame {
 
     private LocalDate date;
 
-    public int getId() {
-        return id;
+    public int get_id() {
+        return _id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void set_id(int _id) {
+        this._id = _id;
     }
 
     public List<Integer> getNumbers() {
