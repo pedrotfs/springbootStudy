@@ -24,6 +24,8 @@ public abstract class AbstractGame {
 
     private LocalDate date;
 
+    private String name;
+
     public int get_id() {
         return _id;
     }
@@ -94,5 +96,13 @@ public abstract class AbstractGame {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
