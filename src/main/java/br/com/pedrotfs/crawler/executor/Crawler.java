@@ -82,9 +82,8 @@ public class Crawler {
             LOG.info("Updating source was deemed necessary.");
             downloader.download(fileLocation, fileName);
             decompresser.decompress(extractTo, fileName, zippedName);
-            //registerProducer.produceRegister(assembler.assemble(parser.parse(extractTo)));
+            registerProducer.produceRegister(assembler.assemble(parser.parse(extractTo)));
         }
-        registerProducer.produceRegister(assembler.assemble(parser.parse(extractTo)));
     }
 
     private boolean shouldUpdateSource() {

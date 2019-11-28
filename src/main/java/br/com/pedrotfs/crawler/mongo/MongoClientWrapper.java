@@ -72,7 +72,7 @@ public class MongoClientWrapper {
     public void persistPreSentRecords(final String register) {
         boolean debugInsert = true;
         final MongoCollection<Document> collection = mongoClient.getDatabase(databaseName).getCollection(collectionRegister);
-        Bson query = getRequestQueryDocument();
+        Bson query = new Document("_id", Document.parse(register).get(("_id")));
         if(collection.find(query).first() == null && debugInsert) {
             collection.insertOne(Document.parse(register));
         }
