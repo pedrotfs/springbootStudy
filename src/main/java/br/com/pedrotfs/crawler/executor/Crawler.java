@@ -64,11 +64,11 @@ public class Crawler {
         String previousRequest = pooledRequest;
         while(!pooledRequest.equalsIgnoreCase("X"))
         {
-            if(pooledRequest.equalsIgnoreCase(previousRequest)) {
+            if(pooledRequest.equalsIgnoreCase(previousRequest) || pooledRequest.equalsIgnoreCase("")) {
                 LOG.info("No requests pooled. standing idle.");
             } else {
-                mongoWrapper.persistRequest(pooledRequest);
                 executeFlow();
+                mongoWrapper.persistRequest(pooledRequest);
             }
             previousRequest = pooledRequest;
             pooledRequest = requestConsumer.consumeFeed();

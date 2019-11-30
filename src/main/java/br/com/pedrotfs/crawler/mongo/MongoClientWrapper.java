@@ -106,7 +106,7 @@ public class MongoClientWrapper {
     }
 
     private boolean isDayScheduledForUpdate(Document schedule) {
-        return ((ArrayList) schedule.get("daysOfWeek")).contains(LocalDate.now().getDayOfWeek().toString());
+        return schedule != null && ((ArrayList) schedule.get("daysOfWeek")).contains(LocalDate.now().getDayOfWeek().toString());
     }
 
     private Document getRequestQueryDocument() {
