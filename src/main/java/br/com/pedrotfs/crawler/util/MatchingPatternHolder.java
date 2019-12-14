@@ -16,6 +16,12 @@ public class MatchingPatternHolder {
     @Value("${ltf.pattern.prefix.odd}")
     private String ltfOdd;
 
+    @Value("${mgs.pattern.prefix.even}")
+    private String mgsEven;
+
+    @Value("${mgs.pattern.prefix.odd}")
+    private String mgsOdd;
+
     //util
     @Value("${pattern.split}")
     private String split;
@@ -28,6 +34,14 @@ public class MatchingPatternHolder {
 
     public String getLtfOdd() {
         return ltfOdd;
+    }
+
+    public String getMgsEven() {
+        return mgsEven;
+    }
+
+    public String getMgsOdd() {
+        return mgsOdd;
     }
 
     public String getSplit() {

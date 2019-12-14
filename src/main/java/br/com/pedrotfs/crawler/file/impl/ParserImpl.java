@@ -50,7 +50,7 @@ public class ParserImpl implements Parser {
         return filteredResults;
     }
 
-    private boolean filterLines(Element e) {
+    protected boolean filterLines(Element e) {
         return e.toString().startsWith(matchingPatternHolder.getLtfEven()) || e.toString().startsWith(matchingPatternHolder.getLtfOdd());
     }
 
@@ -103,4 +103,7 @@ public class ParserImpl implements Parser {
         return result;
     }
 
+    public MatchingPatternHolder getMatchingPatternHolder() {
+        return matchingPatternHolder;
+    }
 }

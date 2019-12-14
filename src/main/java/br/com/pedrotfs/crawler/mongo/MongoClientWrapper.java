@@ -78,19 +78,16 @@ public class MongoClientWrapper {
         }
     }
 
-    public boolean shouldUpdateSource()
+    public boolean shouldUpdateSource(final String request)
     {
         final Document bson = getRequestQueryDocument();
-        final Document scheduleDocument = mongoClient.getDatabase(databaseName).getCollection(collectionSchedule).find(bson).first();
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd").withLocale(Locale.ENGLISH);
-        if(isDayScheduledForUpdate(scheduleDocument)) {
-            final Document requestDocument = recoverLastRequestDocument();
-            if(requestDocument != null) {
-                final LocalDate date = LocalDate.parse(requestDocument.get("date").toString(), formatter);
-                return date.isBefore(LocalDate.now());
-            }
+        final Document requestDocument = recoverLastRequestDocument();
+        if(requestDocument != null) {
+            final LocalDate date = LocalDate.parse(requestDocument.get("date").toString(), formatter);
+            return date.isBefore(LocalDate.now()) && requestDocument.getString("_id").equalsIgnoreCase(request);
         }
-        return false; //needs database to save when last download and schedule
+        return true;
     }
 
     public String recoverLastRequest() {

@@ -1,6 +1,7 @@
 package br.com.pedrotfs.crawler.kafka.impl;
 
 import br.com.pedrotfs.crawler.domain.LtfGame;
+import br.com.pedrotfs.crawler.domain.MgsGame;
 import br.com.pedrotfs.crawler.kafka.RegisterProducer;
 import br.com.pedrotfs.crawler.kafka.callback.ProducerCallBack;
 import br.com.pedrotfs.crawler.kafka.factory.KafkaProducerFactory;
@@ -29,6 +30,29 @@ public class RegisterProducerImpl implements RegisterProducer {
 
     @Override
     public void produceRegister(List<LtfGame> registers) {
+        LOG.info("producing " + registers.size() + " registers.");
+
+        final KafkaProducer<String, String> producer = kafkaProducerFactory.createProducer();
+        final ProducerCallBack callback = new ProducerCallBack();
+
+        GsonBuilder gsonBuilder = new GsonBuilder();
+//        gsonBuilder.setPrettyPrinting();
+        Gson gson = gsonBuilder.create();
+
+        registers.forEach(r -> {
+            final String message = gson.toJson(r);
+            LOG.debug(message);
+            final ProducerRecord<String, String> producerRecord = kafkaProducerFactory.createProducerRecord(message);
+            mongoClientWrapper.persistPreSentRecords(message);
+            producer.send(producerRecord , callback);
+        });
+
+        producer.flush();
+        producer.close();
+    }
+
+    @Override
+    public void produceRegisterMgs(List<MgsGame> registers) {
         LOG.info("producing " + registers.size() + " registers.");
 
         final KafkaProducer<String, String> producer = kafkaProducerFactory.createProducer();
