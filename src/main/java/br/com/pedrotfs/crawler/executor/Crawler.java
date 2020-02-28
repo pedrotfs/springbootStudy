@@ -105,21 +105,21 @@ public class Crawler {
     }
 
     private void executeFlowLtf() {
-        if(shouldUpdateSource("ltf")) {
+//        if(shouldUpdateSource("ltf")) {
             LOG.info("Updating source was deemed necessary.");
             downloader.download(fileLocation, fileName);
             decompresser.decompress(extractTo, fileName, zippedName);
             registerProducer.produceRegister(assembler.assemble(parser.parse(extractTo)));
-        }
+//        }
     }
 
     private void executeFlowMgs() {
-        if(shouldUpdateSource("mgs")) { //TODO here to test schedules
+//        if(shouldUpdateSource("mgs")) {
             LOG.info("Updating source was deemed necessary [MGS].");
             downloader.download(fileLocationMgs, fileNameMgs);
             decompresser.decompress(extractToMgs, fileNameMgs, zippedNameMgs);
             registerProducer.produceRegisterMgs(assembler.assembleMgs(parserMgsImpl.parse(extractToMgs)));
-        }
+//        }
     }
 
     private boolean shouldUpdateSource(final String request) {
